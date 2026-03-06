@@ -369,7 +369,7 @@ function openModal(note = null) {
     $('photoPreview').src = '';
   }
 
-  $('modalTitle').textContent = note ? 'Edit Note ✏️' : 'New Memory 🎓';
+  $('modalTitle').textContent = note ? 'Edit Note' : 'New Memory';
   updatePreview();
   $('modalOverlay').classList.add('open');
   $('inputText').focus();
