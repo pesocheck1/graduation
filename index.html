@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graduation Memory Board 🎓</title>
+    <meta name="description"
+        content="Interactive memory board for college graduates — leave messages, advice, and memories for future students." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&family=Caveat:wght@400;600&family=Pacifico&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- Floating particles background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-logo">
+                <span class="cap-icon">🎓</span>
+                <div>
+                    <h1 class="header-title">Memory Board</h1>
+                    <p class="header-sub">Graduation 2025</p>
+                </div>
+            </div>
+            <div class="header-stats" id="headerStats">
+                <div class="stat-chip" id="statAll"><span class="stat-num" id="countAll">0</span><span
+                        class="stat-label">total</span></div>
+                <div class="stat-chip" id="statMsg"><span class="stat-num" id="countMsg">0</span><span
+                        class="stat-label">messages</span></div>
+                <div class="stat-chip" id="statAdv"><span class="stat-num" id="countAdv">0</span><span
+                        class="stat-label">advice</span></div>
+                <div class="stat-chip" id="statMem"><span class="stat-num" id="countMem">0</span><span
+                        class="stat-label">memories</span></div>
+                <div class="stat-chip" id="statPh"><span class="stat-num" id="countPh">0</span><span
+                        class="stat-label">photos</span></div>
+            </div>
+            <button class="btn-add" id="btnAdd" title="Add a memory">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Add Memory</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== FILTER BAR ===== -->
+    <div class="filter-bar">
+        <div class="filter-inner">
+            <button class="filter-btn active" data-filter="all">✨ All</button>
+            <button class="filter-btn" data-filter="message">💌 Messages</button>
+            <button class="filter-btn" data-filter="advice">💡 Advice</button>
+            <button class="filter-btn" data-filter="memory">📸 Memories</button>
+            <button class="filter-btn" data-filter="photo">🖼️ Photos</button>
+        </div>
+    </div>
+
+    <!-- ===== BOARD ===== -->
+    <main class="board-wrapper">
+        <div class="board" id="board">
+            <!-- Empty state -->
+            <div class="board-empty" id="boardEmpty" style="display:none;">
+                <div class="empty-icon">🎓</div>
+                <h2>The board is empty</h2>
+                <p>Be the first to leave a memory for future students!</p>
+                <button class="btn-empty-add" id="btnEmptyAdd">Add the first note</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== ADD/EDIT MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">New Memory 🎓</h2>
+                <p class="modal-subtitle">Leave something meaningful for those who come after you</p>
+            </div>
+
+            <!-- Type selector -->
+            <div class="field-group">
+                <label class="field-label">Note Type</label>
+                <div class="type-selector" id="typeSelector">
+                    <button class="type-btn active" data-type="message">💌 Message</button>
+                    <button class="type-btn" data-type="advice">💡 Advice</button>
+                    <button class="type-btn" data-type="memory">⭐ Memory</button>
+                    <button class="type-btn" data-type="photo">🖼️ Photo</button>
+                </div>
+            </div>
+
+            <!-- Author name -->
+            <div class="field-group">
+                <label class="field-label" for="inputAuthor">Your Name</label>
+                <input type="text" id="inputAuthor" class="field-input" placeholder="e.g. Alexandra, Class of 2025"
+                    maxlength="60" />
+            </div>
+
+            <!-- Text area -->
+            <div class="field-group" id="textGroup">
+                <label class="field-label" for="inputText">Your Note</label>
+                <textarea id="inputText" class="field-textarea" placeholder="Write something warm, funny, or wise..."
+                    maxlength="400"></textarea>
+                <span class="char-count"><span id="charCount">0</span>/400</span>
+            </div>
+
+            <!-- Photo upload -->
+            <div class="field-group" id="photoGroup" style="display:none;">
+                <label class="field-label">Photo</label>
+                <div class="photo-drop" id="photoDrop">
+                    <input type="file" id="photoInput" accept="image/*" style="display:none;" />
+                    <div class="photo-drop-inner" id="photoDropInner">
+                        <span class="photo-drop-icon">📷</span>
+                        <p>Click or drag a photo here</p>
+                        <span class="photo-hint">JPG, PNG, WEBP — up to 5 MB</span>
+                    </div>
+                    <div class="photo-preview-wrap" id="photoPreviewWrap" style="display:none;">
+                        <img id="photoPreview" src="" alt="Preview" />
+                        <button class="photo-remove" id="photoRemove">✕ Remove</button>
+                    </div>
+                </div>
+                <div class="field-group" style="margin-top:12px;">
+                    <label class="field-label" for="inputCaption">Photo Caption (optional)</label>
+                    <input type="text" id="inputCaption" class="field-input"
+                        placeholder="What's happening in the photo?" maxlength="100" />
+                </div>
+            </div>
+
+            <!-- Customization -->
+            <div class="field-group">
+                <label class="field-label">Note Appearance</label>
+                <div class="customize-panel">
+
+                    <!-- Colors -->
+                    <div class="custom-section">
+                        <span class="custom-section-title">🎨 Color</span>
+                        <div class="color-swatches" id="colorSwatches">
+                            <button class="swatch active" data-color="#fef9c3" style="background:#fef9c3;"
+                                title="Lemon"></button>
+                            <button class="swatch" data-color="#fce7f3" style="background:#fce7f3;"
+                                title="Pink"></button>
+                            <button class="swatch" data-color="#dbeafe" style="background:#dbeafe;"
+                                title="Sky Blue"></button>
+                            <button class="swatch" data-color="#dcfce7" style="background:#dcfce7;"
+                                title="Mint"></button>
+                            <button class="swatch" data-color="#ede9fe" style="background:#ede9fe;"
+                                title="Lavender"></button>
+                            <button class="swatch" data-color="#ffedd5" style="background:#ffedd5;"
+                                title="Peach"></button>
+                            <button class="swatch" data-color="#f1f5f9" style="background:#f1f5f9;"
+                                title="Gray"></button>
+                            <button class="swatch" data-color="#fdf4ff" style="background:#fdf4ff;"
+                                title="Lilac"></button>
+                            <label class="swatch swatch-custom" title="Custom color">
+                                🎲
+                                <input type="color" id="customColor" value="#fef9c3" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Fonts -->
+                    <div class="custom-section">
+                        <span class="custom-section-title">✍️ Font</span>
+                        <div class="font-selector" id="fontSelector">
+                            <button class="font-btn active" data-font="Inter" style="font-family:Inter">Regular</button>
+                            <button class="font-btn" data-font="Dancing Script"
+                                style="font-family:'Dancing Script'">Handwritten</button>
+                            <button class="font-btn" data-font="Caveat" style="font-family:'Caveat'">Sketch</button>
+                            <button class="font-btn" data-font="Pacifico"
+                                style="font-family:'Pacifico'">Pacifico</button>
+                            <button class="font-btn" data-font="Playfair Display"
+                                style="font-family:'Playfair Display'">Classic</button>
+                        </div>
+                    </div>
+
+                    <!-- Size -->
+                    <div class="custom-section">
+                        <span class="custom-section-title">📐 Size</span>
+                        <div class="size-selector" id="sizeSelector">
+                            <button class="size-btn active" data-size="small">S — Small</button>
+                            <button class="size-btn" data-size="medium">M — Medium</button>
+                            <button class="size-btn" data-size="large">L — Large</button>
+                        </div>
+                    </div>
+
+                    <!-- Emoji sticker -->
+                    <div class="custom-section">
+                        <span class="custom-section-title">😊 Sticker</span>
+                        <div class="emoji-picker" id="emojiPicker">
+                            <button class="emoji-btn active" data-emoji="">—</button>
+                            <button class="emoji-btn" data-emoji="🎓">🎓</button>
+                            <button class="emoji-btn" data-emoji="⭐">⭐</button>
+                            <button class="emoji-btn" data-emoji="💡">💡</button>
+                            <button class="emoji-btn" data-emoji="💌">💌</button>
+                            <button class="emoji-btn" data-emoji="🌟">🌟</button>
+                            <button class="emoji-btn" data-emoji="🔥">🔥</button>
+                            <button class="emoji-btn" data-emoji="🎉">🎉</button>
+                            <button class="emoji-btn" data-emoji="❤️">❤️</button>
+                            <button class="emoji-btn" data-emoji="🚀">🚀</button>
+                            <button class="emoji-btn" data-emoji="🌈">🌈</button>
+                            <button class="emoji-btn" data-emoji="☕">☕</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="field-group">
+                <label class="field-label">Preview</label>
+                <div class="preview-wrap" id="previewWrap">
+                    <div class="note note-preview" id="notePreview">
+                        <div class="note-sticker" id="previewSticker" style="display:none;"></div>
+                        <div class="note-type-badge" id="previewBadge">💌 Message</div>
+                        <div class="note-text" id="previewText">Your text will appear here...</div>
+                        <div class="note-photo-container" id="previewPhotoContainer" style="display:none;">
+                            <img id="previewPhotoImg" src="" alt="Photo" />
+                        </div>
+                        <div class="note-author" id="previewAuthor">— Anonymous</div>
+                        <div class="note-date" id="previewDate"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="modal-actions">
+                <button class="btn-cancel" id="btnCancel">Cancel</button>
+                <button class="btn-save" id="btnSave">Save Memory 🎓</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DELETE CONFIRM ===== -->
+    <div class="confirm-overlay" id="confirmOverlay" style="display:none;">
+        <div class="confirm-box">
+            <p>Delete this note?</p>
+            <div class="confirm-btns">
+                <button class="btn-cancel" id="confirmNo">Cancel</button>
+                <button class="btn-delete" id="confirmYes">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- ===== CONFETTI CANVAS ===== -->
+    <canvas id="confetti" style="position:fixed;top:0;left:0;pointer-events:none;z-index:9999;"></canvas>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
